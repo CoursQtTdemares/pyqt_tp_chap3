@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -34,6 +35,11 @@ class FormResult:
 
 
 class FormWindow(QMainWindow):
+    def create_separator(self) -> QFrame:
+        separator = QFrame()
+        separator.setFrameStyle(QFrame.Shape.HLine | QFrame.Shadow.Sunken)
+        return separator
+
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Formulaire - tp chapitre 3")
@@ -77,6 +83,8 @@ class FormWindow(QMainWindow):
 
         info_layout.addLayout(email_layout)
 
+        form_layout.addWidget(self.create_separator())
+
         # == Adresse ==
         address_layout = QVBoxLayout()
         form_layout.addLayout(address_layout)
@@ -118,6 +126,8 @@ class FormWindow(QMainWindow):
 
         address_layout.addLayout(country_layout)
 
+        form_layout.addWidget(self.create_separator())
+
         # == Préférences ==
         preferences_layout = QVBoxLayout()
         form_layout.addLayout(preferences_layout)
@@ -150,6 +160,8 @@ class FormWindow(QMainWindow):
         comment_layout.addWidget(self.comment_input)
 
         preferences_layout.addLayout(comment_layout)
+
+        form_layout.addWidget(self.create_separator())
 
         # == Button ==
         button_layout = QHBoxLayout()
