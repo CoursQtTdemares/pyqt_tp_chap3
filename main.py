@@ -2,13 +2,13 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from src.main_windows import FormWindow
+from src.calculatrice_windows import CalculatorWindow
 
 
 def main() -> None:
     """Entry point for tp_qt_chap3."""
     app = QApplication(sys.argv)
-    form_window = FormWindow()
+    form_window = CalculatorWindow()
     form_window.show()
 
     sys.exit(app.exec())
