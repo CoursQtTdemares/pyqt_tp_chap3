@@ -1,4 +1,16 @@
-from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMainWindow,
+    QPushButton,
+    QSpinBox,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class FormWindow(QMainWindow):
@@ -86,6 +98,46 @@ class FormWindow(QMainWindow):
 
         address_layout.addLayout(country_layout)
 
-        # Button
-        self.button = QPushButton("Valider")
-        form_layout.addWidget(self.button)
+        # == Préférences ==
+        preferences_layout = QVBoxLayout()
+        form_layout.addLayout(preferences_layout)
+
+        # Age
+        age_layout = QHBoxLayout()
+        age_label = QLabel("Age : ")
+        age_layout.addWidget(age_label)
+        self.age_input = QSpinBox()
+        self.age_input.setRange(16, 99)
+        age_layout.addWidget(self.age_input)
+
+        preferences_layout.addLayout(age_layout)
+
+        # Newsletter
+        newsletter_layout = QHBoxLayout()
+        newsletter_label = QLabel("Newsletter : ")
+        newsletter_layout.addWidget(newsletter_label)
+        self.newsletter_input = QCheckBox()
+        newsletter_layout.addWidget(self.newsletter_input)
+
+        preferences_layout.addLayout(newsletter_layout)
+
+        # Commentaire
+        comment_layout = QVBoxLayout()
+        comment_label = QLabel("Commentaire : ")
+        comment_layout.addWidget(comment_label)
+        self.comment_input = QTextEdit()
+        self.comment_input.setFixedHeight(self.comment_input.fontMetrics().lineSpacing() * 3 + 12)
+        comment_layout.addWidget(self.comment_input)
+
+        preferences_layout.addLayout(comment_layout)
+
+        # == Button ==
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        form_layout.addLayout(button_layout)
+
+        self.validate_button = QPushButton("Valider")
+        button_layout.addWidget(self.validate_button)
+
+        self.cancel_button = QPushButton("Annuler")
+        button_layout.addWidget(self.cancel_button)
