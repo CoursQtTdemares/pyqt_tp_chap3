@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -5,12 +7,30 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QMainWindow,
+    QMessageBox,
     QPushButton,
     QSpinBox,
     QTextEdit,
     QVBoxLayout,
     QWidget,
 )
+
+
+@dataclass
+class FormResult:
+    name: str
+    firstname: str
+    email: str
+    street: str
+    postal_code: str
+    city: str
+    country: str
+    age: int
+    newsletter: bool
+    comment: str
+
+    def to_message_box_format(self) -> str:
+        return f"Nom : {self.name}\nPrénom : {self.firstname}\nEmail : {self.email}\nRue : {self.street}\nCode postal : {self.postal_code}\nVille : {self.city}\nPays : {self.country}\nAge : {self.age}\nNewsletter : {self.newsletter}\nCommentaire : {self.comment}"
 
 
 class FormWindow(QMainWindow):
@@ -137,7 +157,28 @@ class FormWindow(QMainWindow):
         form_layout.addLayout(button_layout)
 
         self.validate_button = QPushButton("Valider")
+        self.validate_button.clicked.connect(self.validate_form)
         button_layout.addWidget(self.validate_button)
 
         self.cancel_button = QPushButton("Annuler")
         button_layout.addWidget(self.cancel_button)
+
+    def validate_form(self) -> None:
+        result = FormResult(
+            name=self.name_input.text(),
+            firstname=self.firstname_input.text(),
+            email=self.email_input.text(),
+            street=self.street_input.text(),
+            postal_code=self.postal_code_input.text(),
+            city=self.city_input.text(),
+            country=self.country_input.currentText(),
+            age=self.age_input.value(),
+            newsletter=self.newsletter_input.isChecked(),
+            comment=self.comment_input.toPlainText(),
+        )
+
+        # Créer et afficher le QMessageBox
+        message_box = QMessageBox()
+        message_box.setWindowTitle("Résultat")
+        message_box.setText(result.to_message_box_format())
+        message_box.exec()
