@@ -57,3 +57,42 @@ class CalculatorWindow(QMainWindow):
         button_0.setStyleSheet("font-size: 16px; font-weight: bold;")
         # addWidget(widget, row, column, rowSpan, columnSpan)
         grid_layout.addWidget(button_0, 3, 0, 1, 2)
+
+        # == Colonne des opérateurs ==
+        operators = [
+            ("÷", 0),  # Division - ligne 0
+            ("x", 1),  # Multiplication - ligne 1
+            ("-", 2),  # Soustraction - ligne 2
+            ("+", 3),  # Addition - ligne 3
+        ]
+
+        # Style pour les boutons d'opérateurs (couleur de fond différente)
+        operator_style = """
+            QPushButton {
+                font-size: 16px;
+                font-weight: bold;
+                background-color: #FF9500;
+                color: white;
+                border: 1px solid #CC7700;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #FFAD33;
+            }
+            QPushButton:pressed {
+                background-color: #CC7700;
+            }
+        """
+
+        # Création des boutons d'opérateurs dans la colonne 3
+        for symbol, row in operators:
+            button = QPushButton(symbol)
+            button.setMinimumSize(60, 50)
+            button.setStyleSheet(operator_style)
+            grid_layout.addWidget(button, row, 3)  # Colonne 3 (4ème colonne)
+
+        # Bouton "=" dans la colonne 2, ligne 3 (à côté du bouton 0)
+        equals_button = QPushButton("=")
+        equals_button.setMinimumSize(60, 50)
+        equals_button.setStyleSheet(operator_style)
+        grid_layout.addWidget(equals_button, 3, 2)
