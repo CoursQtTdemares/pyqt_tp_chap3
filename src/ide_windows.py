@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QListWidget, QMainWindow, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QListWidget, QMainWindow, QTextEdit, QVBoxLayout, QWidget
 
 
 class FileExplorerWidget(QWidget):
@@ -35,6 +35,54 @@ class FileExplorerWidget(QWidget):
         self.file_list.addItems(fake_files)
 
         layout.addWidget(self.file_list)
+
+
+class CentralEditorWidget(QWidget):
+    def __init__(self) -> None:
+        super().__init__()
+        self.setup_ui()
+
+    def setup_ui(self) -> None:
+        # Créer le layout vertical principal
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        # Créer l'éditeur de texte principal
+        self.editor = QTextEdit()
+        self.editor.setPlaceholderText("Éditeur de code - Zone d'édition principale")
+        self.editor.setStyleSheet("""
+            QTextEdit {
+                background-color: #2b2b2b;
+                color: #ffffff;
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+                border: 1px solid #555;
+                padding: 5px;
+            }
+        """)
+
+        # Créer la console
+        self.console = QTextEdit()
+        self.console.setPlaceholderText("Console - Sortie des commandes et logs")
+        self.console.setReadOnly(True)
+        self.console.setStyleSheet("""
+            QTextEdit {
+                background-color: #1e1e1e;
+                color: #00ff00;
+                font-family: 'Courier New', monospace;
+                font-size: 10px;
+                border: 1px solid #555;
+                padding: 5px;
+            }
+        """)
+
+        # Ajouter du contenu d'exemple à la console
+        self.console.append(">>> Console initialisée")
+        self.console.append(">>> Prêt pour les commandes...")
+
+        # Ajouter les widgets avec les proportions 75%-25%
+        layout.addWidget(self.editor, 3)  # 75% (3/4)
+        layout.addWidget(self.console, 1)  # 25% (1/4)
 
 
 class IDEWindow(QMainWindow):
@@ -77,8 +125,7 @@ class IDEWindow(QMainWindow):
         left_sidebar.setFixedWidth(200)
 
         # Zone centrale - proportion 3
-        central_area = QLabel("Zone Centrale")
-        central_area.setStyleSheet("background-color: lightgray; border: 1px solid black; padding: 10px;")
+        central_area = CentralEditorWidget()
 
         # Zone droite (panneau droit) - proportion 1
         right_panel = QLabel("Panneau Droit")
