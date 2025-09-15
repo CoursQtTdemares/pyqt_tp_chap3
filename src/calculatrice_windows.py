@@ -36,6 +36,7 @@ class CalculatorWindow(QMainWindow):
         self.main_layout.addWidget(grid_widget)
 
         # Configuration des boutons selon le pavé numérique classique
+        # Ligne 0: C, ±, % (fonctions)
         # Ligne 1: 7, 8, 9
         # Ligne 2: 4, 5, 6
         # Ligne 3: 1, 2, 3
@@ -43,27 +44,27 @@ class CalculatorWindow(QMainWindow):
 
         button_layout = [[7, 8, 9], [4, 5, 6], [1, 2, 3]]
 
-        # Création des boutons pour les chiffres 1-9
+        # Création des boutons pour les chiffres 1-9 (décalés d'une ligne vers le bas)
         for row, numbers in enumerate(button_layout):
             for col, number in enumerate(numbers):
                 button = QPushButton(str(number))
                 button.setMinimumSize(60, 50)
                 button.setStyleSheet("font-size: 16px; font-weight: bold;")
-                grid_layout.addWidget(button, row, col)
+                grid_layout.addWidget(button, row + 1, col)  # +1 pour faire place aux fonctions
 
         # Bouton 0 sur la dernière ligne, étendu sur 2 colonnes
         button_0 = QPushButton("0")
         button_0.setMinimumSize(60, 50)
         button_0.setStyleSheet("font-size: 16px; font-weight: bold;")
         # addWidget(widget, row, column, rowSpan, columnSpan)
-        grid_layout.addWidget(button_0, 3, 0, 1, 2)
+        grid_layout.addWidget(button_0, 4, 0, 1, 2)  # Ligne 4 maintenant
 
         # == Colonne des opérateurs ==
         operators = [
-            ("÷", 0),  # Division - ligne 0
-            ("x", 1),  # Multiplication - ligne 1
-            ("-", 2),  # Soustraction - ligne 2
-            ("+", 3),  # Addition - ligne 3
+            ("÷", 1),  # Division - ligne 1 (après les fonctions)
+            ("x", 2),  # Multiplication - ligne 2
+            ("-", 3),  # Soustraction - ligne 3
+            ("+", 4),  # Addition - ligne 4
         ]
 
         # Style pour les boutons d'opérateurs (couleur de fond différente)
@@ -91,8 +92,40 @@ class CalculatorWindow(QMainWindow):
             button.setStyleSheet(operator_style)
             grid_layout.addWidget(button, row, 3)  # Colonne 3 (4ème colonne)
 
-        # Bouton "=" dans la colonne 2, ligne 3 (à côté du bouton 0)
+        # Bouton "=" dans la colonne 2, ligne 4 (à côté du bouton 0)
         equals_button = QPushButton("=")
         equals_button.setMinimumSize(60, 50)
         equals_button.setStyleSheet(operator_style)
-        grid_layout.addWidget(equals_button, 3, 2)
+        grid_layout.addWidget(equals_button, 4, 2)
+
+        # Liste des fonctions dans l'ordre d'affichage (de gauche à droite)
+        functions = [
+            ("C", 0),  # Clear - colonne 0
+            ("±", 1),  # Plus/Minus - colonne 1
+            ("%", 2),  # Pourcentage - colonne 2
+        ]
+
+        # Style pour les boutons de fonction (couleur grise claire)
+        function_style = """
+            QPushButton {
+                font-size: 16px;
+                font-weight: bold;
+                background-color: #A6A6A6;
+                color: black;
+                border: 1px solid #808080;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #BFBFBF;
+            }
+            QPushButton:pressed {
+                background-color: #808080;
+            }
+        """
+
+        # Création des boutons de fonction dans la ligne 0
+        for symbol, col in functions:
+            button = QPushButton(symbol)
+            button.setMinimumSize(60, 50)
+            button.setStyleSheet(function_style)
+            grid_layout.addWidget(button, 0, col)  # Ligne 0, colonnes 0, 1, 2
