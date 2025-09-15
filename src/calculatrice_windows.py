@@ -50,3 +50,10 @@ class CalculatorWindow(QMainWindow):
                 button.setMinimumSize(60, 50)
                 button.setStyleSheet("font-size: 16px; font-weight: bold;")
                 grid_layout.addWidget(button, row, col)
+
+        # Bouton 0 sur la dernière ligne, étendu sur 2 colonnes
+        button_0 = QPushButton("0")
+        button_0.setMinimumSize(60, 50)
+        button_0.setStyleSheet("font-size: 16px; font-weight: bold;")
+        # addWidget(widget, row, column, rowSpan, columnSpan)
+        grid_layout.addWidget(button_0, 3, 0, 1, 2)
