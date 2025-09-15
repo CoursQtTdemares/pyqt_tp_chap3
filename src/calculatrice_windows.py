@@ -101,6 +101,7 @@ class CalculatorWindow(QMainWindow):
         equals_button = QPushButton("=")
         equals_button.setMinimumSize(60, 50)
         equals_button.setStyleSheet(operator_style)
+        equals_button.clicked.connect(self.equals_pressed)
         grid_layout.addWidget(equals_button, 4, 2)
 
         # Liste des fonctions dans l'ordre d'affichage (de gauche à droite)
@@ -149,3 +150,12 @@ class CalculatorWindow(QMainWindow):
 
     def clear_pressed(self) -> None:
         self.result_display.setText("0")
+
+    def equals_pressed(self) -> None:
+        if (display := self.result_display.text()).endswith(("x", "÷", "+", "-")):
+            self.result_display.setText(display[:-1])
+            return
+
+        formatted_display = self.result_display.text().replace("x", "*").replace("÷", "/")
+        result = eval(formatted_display)  # noqa: S307
+        self.result_display.setText(str(result))
