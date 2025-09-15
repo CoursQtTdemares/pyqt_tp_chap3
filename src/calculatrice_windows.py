@@ -133,6 +133,8 @@ class CalculatorWindow(QMainWindow):
             button = QPushButton(symbol)
             button.setMinimumSize(60, 50)
             button.setStyleSheet(function_style)
+            if symbol == "C":
+                button.clicked.connect(self.clear_pressed)
             grid_layout.addWidget(button, 0, col)  # Ligne 0, colonnes 0, 1, 2
 
     def symbol_pressed(self, symbol: int | str) -> None:
@@ -144,3 +146,6 @@ class CalculatorWindow(QMainWindow):
         else:
             # Sinon, ajouter le chiffre à la fin
             self.result_display.setText(current_text + str(symbol))
+
+    def clear_pressed(self) -> None:
+        self.result_display.setText("0")
