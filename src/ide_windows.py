@@ -1,4 +1,40 @@
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QMainWindow, QWidget
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QListWidget, QMainWindow, QVBoxLayout, QWidget
+
+
+class FileExplorerWidget(QWidget):
+    def __init__(self) -> None:
+        super().__init__()
+        self.setup_ui()
+
+    def setup_ui(self) -> None:
+        # Créer le layout vertical
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        # Ajouter le titre "Explorateur"
+        title_label = QLabel("Explorateur")
+        layout.addWidget(title_label)
+
+        # Créer la liste des fichiers
+        self.file_list = QListWidget()
+
+        # Ajouter des fichiers factices pour la validation
+        fake_files = [
+            "src/",
+            "tests/",
+            "main.py",
+            "requirements.txt",
+            "README.md",
+            "config.json",
+            "assets/",
+            ".gitignore",
+            "docs/",
+            "setup.py",
+        ]
+
+        self.file_list.addItems(fake_files)
+
+        layout.addWidget(self.file_list)
 
 
 class IDEWindow(QMainWindow):
@@ -37,9 +73,8 @@ class IDEWindow(QMainWindow):
 
         # Créer les trois zones avec des couleurs temporaires pour la validation
         # Zone gauche (sidebar) - proportion 1
-        left_sidebar = QLabel("Sidebar Gauche")
-        left_sidebar.setStyleSheet("background-color: lightblue; border: 1px solid black; padding: 10px;")
-        left_sidebar.setFixedWidth(150)
+        left_sidebar = FileExplorerWidget()
+        left_sidebar.setFixedWidth(200)
 
         # Zone centrale - proportion 3
         central_area = QLabel("Zone Centrale")
