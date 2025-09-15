@@ -1,3 +1,5 @@
+import functools
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QGridLayout, QLineEdit, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
@@ -50,12 +52,14 @@ class CalculatorWindow(QMainWindow):
                 button = QPushButton(str(number))
                 button.setMinimumSize(60, 50)
                 button.setStyleSheet("font-size: 16px; font-weight: bold;")
+                button.clicked.connect(functools.partial(self.symbol_pressed, symbol=number))
                 grid_layout.addWidget(button, row + 1, col)  # +1 pour faire place aux fonctions
 
         # Bouton 0 sur la dernière ligne, étendu sur 2 colonnes
         button_0 = QPushButton("0")
         button_0.setMinimumSize(60, 50)
         button_0.setStyleSheet("font-size: 16px; font-weight: bold;")
+        button_0.clicked.connect(functools.partial(self.symbol_pressed, symbol=0))
         # addWidget(widget, row, column, rowSpan, columnSpan)
         grid_layout.addWidget(button_0, 4, 0, 1, 2)  # Ligne 4 maintenant
 
@@ -90,6 +94,7 @@ class CalculatorWindow(QMainWindow):
             button = QPushButton(symbol)
             button.setMinimumSize(60, 50)
             button.setStyleSheet(operator_style)
+            button.clicked.connect(functools.partial(self.symbol_pressed, symbol=symbol))
             grid_layout.addWidget(button, row, 3)  # Colonne 3 (4ème colonne)
 
         # Bouton "=" dans la colonne 2, ligne 4 (à côté du bouton 0)
@@ -129,3 +134,13 @@ class CalculatorWindow(QMainWindow):
             button.setMinimumSize(60, 50)
             button.setStyleSheet(function_style)
             grid_layout.addWidget(button, 0, col)  # Ligne 0, colonnes 0, 1, 2
+
+    def symbol_pressed(self, symbol: int | str) -> None:
+        """Gère la saisie des chiffres et met à jour l'affichage"""
+        current_text = self.result_display.text()
+
+        if current_text == "0":
+            self.result_display.setText(str(symbol))
+        else:
+            # Sinon, ajouter le chiffre à la fin
+            self.result_display.setText(current_text + str(symbol))
