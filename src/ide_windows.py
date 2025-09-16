@@ -85,6 +85,92 @@ class CentralEditorWidget(QWidget):
         layout.addWidget(self.console, 1)  # 25% (1/4)
 
 
+class PropertiesPanelWidget(QWidget):
+    def __init__(self) -> None:
+        super().__init__()
+        self.setup_ui()
+
+    def setup_ui(self) -> None:
+        # Créer le layout vertical principal
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        # Section Propriétés
+        properties_title = QLabel("Propriétés")
+        properties_title.setStyleSheet("""
+            QLabel {
+                font-weight: bold;
+                padding: 5px;
+                background-color: #4a4a4a;
+                color: white;
+                border: 1px solid #666;
+            }
+        """)
+
+        self.properties_content = QTextEdit()
+        self.properties_content.setStyleSheet("""
+            QTextEdit {
+                background-color: #f5f5f5;
+                border: 1px solid #ccc;
+                padding: 5px;
+                font-size: 11px;
+            }
+        """)
+        self.properties_content.setReadOnly(True)
+        self.properties_content.setMaximumHeight(150)
+
+        # Ajouter du contenu d'exemple aux propriétés
+        self.properties_content.append("Fichier: main.py")
+        self.properties_content.append("Taille: 1.2 KB")
+        self.properties_content.append("Modifié: Aujourd'hui 14:30")
+        self.properties_content.append("Encodage: UTF-8")
+        self.properties_content.append("Type: Python Script")
+
+        # Section Outline
+        outline_title = QLabel("Outline")
+        outline_title.setStyleSheet("""
+            QLabel {
+                font-weight: bold;
+                padding: 5px;
+                background-color: #4a4a4a;
+                color: white;
+                border: 1px solid #666;
+            }
+        """)
+
+        self.outline_list = QListWidget()
+        self.outline_list.setStyleSheet("""
+            QListWidget {
+                background-color: white;
+                border: 1px solid #ccc;
+                padding: 2px;
+                font-size: 11px;
+            }
+        """)
+
+        # Ajouter du contenu d'exemple à l'outline
+        outline_items = [
+            "📁 Classes",
+            "  🔧 MainWindow",
+            "  🔧 FileManager",
+            "📁 Fonctions",
+            "  ⚙️ init_app()",
+            "  ⚙️ load_config()",
+            "  ⚙️ save_file()",
+            "📁 Variables",
+            "  📋 app_config",
+            "  📋 current_file",
+        ]
+
+        self.outline_list.addItems(outline_items)
+
+        # Ajouter les widgets au layout avec proportions
+        layout.addWidget(properties_title)
+        layout.addWidget(self.properties_content, 1)
+        layout.addWidget(outline_title)
+        layout.addWidget(self.outline_list, 2)
+
+
 class IDEWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
@@ -128,9 +214,8 @@ class IDEWindow(QMainWindow):
         central_area = CentralEditorWidget()
 
         # Zone droite (panneau droit) - proportion 1
-        right_panel = QLabel("Panneau Droit")
-        right_panel.setStyleSheet("background-color: lightgreen; border: 1px solid black; padding: 10px;")
-        right_panel.setFixedWidth(150)
+        right_panel = PropertiesPanelWidget()
+        right_panel.setFixedWidth(220)
 
         # Ajouter les widgets avec les proportions 1:3:1 avec stretch_factor
         main_layout.addWidget(left_sidebar, 1)
