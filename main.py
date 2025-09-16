@@ -2,13 +2,13 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from src.ide_windows import IDEWindow
+from src.blog_responsive import BlogResponsive
 
 
 def main() -> None:
     """Entry point for tp_qt_chap3."""
     app = QApplication(sys.argv)
-    form_window = IDEWindow()
+    form_window = BlogResponsive()
     form_window.show()
 
     sys.exit(app.exec())
