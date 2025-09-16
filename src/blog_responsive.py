@@ -1,5 +1,7 @@
+from typing import override
+
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QResizeEvent
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -300,6 +302,10 @@ class BlogResponsive(QMainWindow):
 
     def __init__(self) -> None:
         super().__init__()
+        # Seuils de largeur pour le responsive design
+        self.BREAKPOINT_MOBILE = 500
+        self.BREAKPOINT_TABLET = 800
+        self.current_layout_mode = "desktop"  # desktop, tablet, mobile
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -317,9 +323,55 @@ class BlogResponsive(QMainWindow):
         main_layout.setSpacing(0)
 
         # Créer et ajouter le header en haut
-        header_widget = HeaderWidget()
-        main_layout.addWidget(header_widget)
+        self.header_widget = HeaderWidget()
+        main_layout.addWidget(self.header_widget)
 
         # Créer la zone de contenu principale du blog
-        main_content_widget = MainContentWidget()
-        main_layout.addWidget(main_content_widget)
+        self.main_content_widget = MainContentWidget()
+        main_layout.addWidget(self.main_content_widget)
+
+    @override
+    def resizeEvent(self, event: QResizeEvent | None) -> None:
+        """Détecte les changements de taille de fenêtre pour le responsive design"""
+        if event is None:
+            return
+
+        super().resizeEvent(event)
+
+        # Récupérer la nouvelle largeur
+        new_width = event.size().width()
+        new_height = event.size().height()
+
+        # Déterminer le mode d'affichage selon la largeur
+        new_layout_mode = self._get_layout_mode(new_width)
+
+        # Messages de debug pour suivre les changements
+        print("🔧 [DEBUG] Redimensionnement détecté:")
+        print(f"   📏 Nouvelle taille: {new_width}x{new_height}px")
+        print(f"   📱 Mode d'affichage: {new_layout_mode}")
+        print(
+            f"   ➡️  Seuils Largeur: Mobile<{self.BREAKPOINT_MOBILE}px | Tablet<{self.BREAKPOINT_TABLET}px | Desktop≥{self.BREAKPOINT_TABLET}px"
+        )
+        print("   " + "=" * 50)
+
+    def _get_layout_mode(self, width: int) -> str:
+        """Détermine le mode d'affichage selon la largeur"""
+        if width < self.BREAKPOINT_MOBILE:
+            return "mobile"
+        elif width < self.BREAKPOINT_TABLET:
+            return "tablet"
+        else:
+            return "desktop"
+
+    def _adapt_layout_to_mode(self, mode: str) -> None:
+        """Adapte l'interface selon le mode d'affichage"""
+        print(f"   🎨 Adaptation de l'interface pour le mode: {mode}")
+
+        if mode == "mobile":
+            print("      📱 Mode Mobile: Interface compacte")
+
+        elif mode == "tablet":
+            print("      📱 Mode Tablet: Interface intermédiaire")
+
+        else:  # desktop
+            print("      🖥️  Mode Desktop: Interface complète")
