@@ -20,6 +20,7 @@ class HeaderWidget(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
+        self.current_mode = "desktop"  # Mode responsive actuel
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -35,15 +36,17 @@ class HeaderWidget(QWidget):
         """)
 
         # Layout horizontal pour le header
-        header_layout = QHBoxLayout(self)
-        header_layout.setContentsMargins(20, 10, 20, 10)
+        self.header_layout = QHBoxLayout(self)
+        self.header_layout.setContentsMargins(20, 10, 20, 10)
 
-        # Ajouter les sections
-        header_layout.addWidget(self._create_logo_section())
-        header_layout.addStretch()
-        header_layout.addWidget(self._create_navigation_section())
-        header_layout.addStretch()
-        header_layout.addWidget(self._create_profile_section())
+        # Créer les sections (on les stocke comme attributs pour pouvoir les manipuler)
+        self.logo_section = self._create_logo_section()
+        self.navigation_section = self._create_navigation_section()
+        self.hamburger_section = self._create_hamburger_section()
+        self.profile_section = self._create_profile_section()
+
+        # Ajouter les sections au layout initial (mode desktop)
+        self._setup_desktop_layout()
 
     def _create_logo_section(self) -> QLabel:
         """Crée la section logo à gauche"""
@@ -97,6 +100,33 @@ class HeaderWidget(QWidget):
 
         return nav_widget
 
+    def _create_hamburger_section(self) -> QPushButton:
+        """Crée le bouton hamburger pour le mode responsive"""
+        hamburger_btn = QPushButton("☰")
+        hamburger_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #34495e;
+                color: #ffffff;
+                border: 2px solid #5d6d7e;
+                border-radius: 6px;
+                padding: 8px 12px;
+                font-size: 18px;
+                font-weight: bold;
+                min-width: 50px;
+            }
+            QPushButton:hover {
+                background-color: #4a5f7a;
+                border: 2px solid #7fb3d3;
+            }
+            QPushButton:pressed {
+                background-color: #2c3e50;
+                border: 2px solid #3498db;
+            }
+        """)
+
+        hamburger_btn.clicked.connect(self._toggle_mobile_menu)
+        return hamburger_btn
+
     def _create_profile_section(self) -> QPushButton:
         """Crée la section profil à droite"""
         profile_btn = QPushButton("👤 Profil")
@@ -122,6 +152,57 @@ class HeaderWidget(QWidget):
             }
         """)
         return profile_btn
+
+    def _setup_desktop_layout(self) -> None:
+        """Configure le layout pour le mode desktop"""
+        # Vider le layout
+        self._clear_layout()
+
+        # Mode desktop : logo + navigation + profil
+        self.header_layout.addWidget(self.logo_section)
+        self.header_layout.addStretch()
+        self.header_layout.addWidget(self.navigation_section)
+        self.header_layout.addStretch()
+        self.header_layout.addWidget(self.profile_section)
+
+    def _setup_tablet_layout(self) -> None:
+        """Configure le layout pour le mode tablet/mobile"""
+        # Vider le layout
+        self._clear_layout()
+
+        # Mode tablet/mobile : logo + hamburger + profil
+        self.header_layout.addWidget(self.logo_section)
+        self.header_layout.addStretch()
+        self.header_layout.addWidget(self.hamburger_section)
+        self.header_layout.addStretch()
+        self.header_layout.addWidget(self.profile_section)
+
+    def _clear_layout(self) -> None:
+        """Vide le layout header de tous ses widgets"""
+        while self.header_layout.count():
+            child = self.header_layout.takeAt(0)
+            if child is not None:
+                widget = child.widget()
+                if widget is not None:
+                    widget.setParent(None)
+
+    def _toggle_mobile_menu(self) -> None:
+        """Bascule l'affichage du menu mobile (pour implémentation future)"""
+        print("🍔 [DEBUG] Bouton hamburger cliqué - Menu mobile à implémenter")
+
+    def set_responsive_mode(self, mode: str) -> None:
+        """Adapte le header selon le mode responsive"""
+        if mode == self.current_mode:
+            return  # Pas de changement nécessaire
+
+        if mode == "desktop":
+            self._setup_desktop_layout()
+            print("   🖥️  Header en mode Desktop: Navigation complète visible")
+        else:  # tablet ou mobile
+            self._setup_tablet_layout()
+            print(f"   📱 Header en mode {mode.title()}: Menu hamburger activé")
+
+        self.current_mode = mode
 
 
 class SidebarWidget(QWidget):
@@ -349,6 +430,13 @@ class BlogResponsive(QMainWindow):
         print("🔧 [DEBUG] Redimensionnement détecté:")
         print(f"   📏 Nouvelle taille: {new_width}x{new_height}px")
         print(f"   📱 Mode d'affichage: {new_layout_mode}")
+
+        # Si le mode a changé, adapter l'interface
+        if new_layout_mode != self.current_layout_mode:
+            print(f"   🔄 Changement de mode: {self.current_layout_mode} → {new_layout_mode}")
+            self._adapt_layout_to_mode(new_layout_mode)
+            self.current_layout_mode = new_layout_mode
+
         print(
             f"   ➡️  Seuils Largeur: Mobile<{self.BREAKPOINT_MOBILE}px | Tablet<{self.BREAKPOINT_TABLET}px | Desktop≥{self.BREAKPOINT_TABLET}px"
         )
@@ -367,11 +455,17 @@ class BlogResponsive(QMainWindow):
         """Adapte l'interface selon le mode d'affichage"""
         print(f"   🎨 Adaptation de l'interface pour le mode: {mode}")
 
+        # Adapter le header selon le mode
+        self.header_widget.set_responsive_mode(mode)
+
         if mode == "mobile":
             print("      📱 Mode Mobile: Interface compacte")
+            # TODO: Adapter la sidebar et le contenu pour mobile
 
         elif mode == "tablet":
             print("      📱 Mode Tablet: Interface intermédiaire")
+            # TODO: Adapter la sidebar et le contenu pour tablet
 
         else:  # desktop
             print("      🖥️  Mode Desktop: Interface complète")
+            # TODO: Assurer que tout est visible en mode desktop
