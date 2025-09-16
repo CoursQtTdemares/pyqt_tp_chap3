@@ -1,4 +1,14 @@
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QListWidget, QMainWindow, QTextEdit, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QListWidget,
+    QMainWindow,
+    QPushButton,
+    QTextEdit,
+    QToolBar,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class FileExplorerWidget(QWidget):
@@ -177,6 +187,7 @@ class IDEWindow(QMainWindow):
         self.setWindowTitle("IDE - tp chapitre 3")
         self.setGeometry(100, 100, 800, 600)
         self.setup_menu_bar()
+        self.setup_toolbar()
         self.setup_status_bar()
         self.setup_main_layout()
 
@@ -197,6 +208,121 @@ class IDEWindow(QMainWindow):
             return
 
         status_bar.showMessage("Ready")
+
+    def setup_toolbar(self) -> None:
+        # Créer la barre d'outils
+        toolbar = QToolBar("Outils principaux")
+        toolbar.setMovable(False)  # Empêcher le déplacement de la toolbar
+        self.addToolBar(toolbar)
+
+        # Bouton Nouveau
+        new_button = QPushButton("📄 Nouveau")
+        new_button.setToolTip("Créer un nouveau fichier (Ctrl+N)")
+        new_button.setStyleSheet("""
+            QPushButton {
+                padding: 8px 16px;
+                margin: 2px;
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 12px;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+                border-color: #999;
+            }
+            QPushButton:pressed {
+                background-color: #d0d0d0;
+            }
+        """)
+        new_button.clicked.connect(self.new_file)
+        toolbar.addWidget(new_button)
+
+        # Bouton Ouvrir
+        open_button = QPushButton("📂 Ouvrir")
+        open_button.setToolTip("Ouvrir un fichier existant (Ctrl+O)")
+        open_button.setStyleSheet("""
+            QPushButton {
+                padding: 8px 16px;
+                margin: 2px;
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 12px;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+                border-color: #999;
+            }
+            QPushButton:pressed {
+                background-color: #d0d0d0;
+            }
+        """)
+        open_button.clicked.connect(self.open_file)
+        toolbar.addWidget(open_button)
+
+        # Bouton Sauvegarder
+        save_button = QPushButton("💾 Sauver")
+        save_button.setToolTip("Sauvegarder le fichier actuel (Ctrl+S)")
+        save_button.setStyleSheet("""
+            QPushButton {
+                padding: 8px 16px;
+                margin: 2px;
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 12px;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+                border-color: #999;
+            }
+            QPushButton:pressed {
+                background-color: #d0d0d0;
+            }
+        """)
+        save_button.clicked.connect(self.save_file)
+        toolbar.addWidget(save_button)
+
+        # Séparateur
+        toolbar.addSeparator()
+
+        # Bouton Exécuter
+        run_button = QPushButton("▶️ Exécuter")
+        run_button.setToolTip("Exécuter le code (F5)")
+        run_button.setStyleSheet("""
+            QPushButton {
+                padding: 8px 16px;
+                margin: 2px;
+                background-color: #4CAF50;
+                color: white;
+                border: 1px solid #45a049;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #45a049;
+                border-color: #3d8b40;
+            }
+            QPushButton:pressed {
+                background-color: #3d8b40;
+            }
+        """)
+        run_button.clicked.connect(self.run_code)
+        toolbar.addWidget(run_button)
+
+    def new_file(self) -> None:
+        print("new_file")
+
+    def open_file(self) -> None:
+        print("open_file")
+
+    def save_file(self) -> None:
+        print("save_file")
+
+    def run_code(self) -> None:
+        print("run_code")
 
     def setup_main_layout(self) -> None:
         central_widget = QWidget()
